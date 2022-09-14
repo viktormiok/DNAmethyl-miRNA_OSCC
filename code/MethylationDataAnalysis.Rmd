@@ -43,7 +43,9 @@ ann850k = getAnnotation(IlluminaHumanMethylationEPICanno.ilm10b2.hg19)
 # read in the sample sheet for the experiment
 setwd("/Users/viktorian.miok/Documents/My Folder/UMFT/UMF-biochim/metilareIulie2019")
 dataDirectory <- "./data"
-targets <- read.metharray.sheet(dataDirectory, pattern="SampleSheet_forR.csv")
+targets <- read.metharray.sheet(dataDirectory, 
+                                pattern="SampleSheet_forR.csv"
+)
 targets
 getwd()
 ```
@@ -56,8 +58,11 @@ rgSet <- read.metharray.exp(targets=targets)
 
 
 # give the samples descriptive names
-targets$ID <- paste(targets$Sample_Group,targets$Sample_Name,sep=".")
-sampleNames(rgSet) <- targets$ID
+targets$ID <- paste(targets$Sample_Group,
+                    targets$Sample_Name,
+                    sep="."
+)
+sampleNames(rgSet) = targets$ID
 rgSet
 ```
 
@@ -77,34 +82,45 @@ detP <- detectionP(rgSet)
 head(detP)
 
 pal <- brewer.pal(8,"Dark2")
-barplot(colMeans(detP), col=pal[factor(targets$Sample_Group)], las=2,
-        cex.names=0.8, ylim = c(0,0.3),ylab="Mean detection p-values")
+barplot(colMeans(detP),
+        col=pal[factor(targets$Sample_Group)], 
+        las=2,
+        cex.names=0.8, 
+        ylim = c(0,0.3),
+        ylab="Mean detection p-values"
+)
 abline(h=0.01,col="red")
-legend("topleft", legend=levels(factor(targets$Sample_Group)), fill=pal,
-       bg="white")
+legend("topleft", 
+       legend=levels(factor(targets$Sample_Group)), 
+       fill=pal,
+       bg="white"
+)
 ```
 
 The ```minfi``` ```qcReport``` function generates many other useful quality control plots. The ```minfi``` vignette describes the various plots and how they should be interpreted in detail. Generally, samples that look poor based on mean detection p-value will also look poor using other metrics and it is usually advisable to exclude them from further analysis.
 
 ```{r, message=FALSE}
-qcReport(rgSet, sampNames=targets$ID, sampGroups=targets$Sample_Group,
-         pdf="qcReport-suplement.pdf")
+qcReport(rgSet, 
+         sampNames=targets$ID, 
+         sampGroups=targets$Sample_Group,
+         pdf="qcReport-suplement.pdf"
+)
 ```
 
 Poor quality samples can be easily excluded from the analysis using a detection p-value cutoff, for example >0.05. For this particular dataset, the ```N4``` sample shows a very high mean detection p-value, and hence it is excluded from subsequent analysis.
 
 ```{r, echo=T}
 # remove poor quality samples
-keep <- colMeans(detP) < 0.2
-rgSet <- rgSet[,keep]
+keep = colMeans(detP) < 0.2
+rgSet = rgSet[,keep]
 rgSet
 
 # remove poor quality samples from targets data
-targets <- targets[keep,]
+targets = targets[keep,]
 targets[,1:5]
 
 # remove poor quality samples from detection p-value table
-detP <- detP[,keep]
+detP = detP[,keep]
 dim(detP)
 ```
 
@@ -122,13 +138,24 @@ mSetSq <- preprocessQuantile(rgSet)
 mSetRaw <- preprocessRaw(rgSet)
 # visualise what the data looks like before and after normalisation
 par(mfrow=c(1,2))
-densityPlot(rgSet, sampGroups=targets$Sample_Group,main="Raw", legend=FALSE)
-legend("top", legend = levels(factor(targets$Sample_Group)),
-       text.col=brewer.pal(8,"Dark2"))
-densityPlot(getBeta(mSetSq), sampGroups=targets$Sample_Group,
-            main="Normalized", legend=FALSE)
-legend("top", legend = levels(factor(targets$Sample_Group)),
-       text.col=brewer.pal(8,"Dark2"))
+densityPlot(rgSet,
+            sampGroups=targets$Sample_Group,
+            main="Raw", 
+            legend=FALSE
+)
+legend("top", 
+       legend=levels(factor(targets$Sample_Group)),
+       text.col=brewer.pal(8,"Dark2")
+)
+densityPlot(getBeta(mSetSq), 
+            sampGroups=targets$Sample_Group,
+            main="Normalized",
+            legend=FALSE
+)
+legend("top", 
+       legend=levels(factor(targets$Sample_Group)),
+       text.col=brewer.pal(8,"Dark2")
+)
 ```
 
 ## Data exploration
@@ -137,10 +164,17 @@ Multi-dimensional scaling (MDS) plots are excellent for visualising data, and ar
 
 ```{r, echo=T}
 # MDS plots to look at largest sources of variation
-plotMDS(getM(mSetSq), top=1000, gene.selection="common",
-        col=pal[factor(targets$Sample_Group)])
-legend("top", legend=levels(factor(targets$Sample_Group)), text.col=pal,
-       bg="white", cex=0.7)
+plotMDS(getM(mSetSq),
+        top = 1000, 
+        gene.selection = "common",
+        col = pal[factor(targets$Sample_Group)]
+)
+legend("top", 
+       legend=levels(factor(targets$Sample_Group)),
+       text.col=pal,
+       bg="white", 
+       cex=0.7
+)
 ```
 
 
@@ -149,18 +183,42 @@ Examining the MDS plots for this dataset demonstrates that the largest source of
 ```{r, echo=T}
 # Examine higher dimensions to look at other sources of variation
 par(mfrow=c(1,3))
-plotMDS(getM(mSetSq), top=1000, gene.selection="common",
-        col=pal[factor(targets$Sample_Group)], dim=c(1,3))
-legend("top", legend=levels(factor(targets$Sample_Group)), text.col=pal,
-       cex=0.7, bg="white")
-plotMDS(getM(mSetSq), top=1000, gene.selection="common",
-        col=pal[factor(targets$Sample_Group)], dim=c(2,3))
-legend("topleft", legend=levels(factor(targets$Sample_Group)), text.col=pal,
-       cex=0.7, bg="white")
-plotMDS(getM(mSetSq), top=1000, gene.selection="common",
-        col=pal[factor(targets$Sample_Group)], dim=c(3,4))
-legend("topright", legend=levels(factor(targets$Sample_Group)), text.col=pal,
-       cex=0.7, bg="white")
+plotMDS(getM(mSetSq),
+        top=1000, 
+        gene.selection="common",
+        col=pal[factor(targets$Sample_Group)],
+        dim=c(1,3)
+)
+legend("top",
+       legend=levels(factor(targets$Sample_Group)),
+       text.col=pal,
+       cex=0.7,
+       bg="white"
+)
+plotMDS(getM(mSetSq),
+        top=1000, 
+        gene.selection="common",
+        col=pal[factor(targets$Sample_Group)],
+        dim=c(2,3)
+)
+legend("topleft", 
+       legend=levels(factor(targets$Sample_Group)),
+       text.col=pal,
+       cex=0.7, 
+       bg="white"
+)
+plotMDS(getM(mSetSq),
+        top=1000,
+        gene.selection="common",
+        col=pal[factor(targets$Sample_Group)],
+        dim=c(3,4)
+)
+legend("topright", 
+       legend=levels(factor(targets$Sample_Group)), 
+       text.col=pal,
+       cex=0.7,
+       bg="white"
+)
 ```
 
 ## Filtering
@@ -172,10 +230,10 @@ Poor performing probes are generally filtered out prior to differential methylat
 detP <- detP[match(featureNames(mSetSq),rownames(detP)),]
 
 # remove any probes that have failed in one or more samples
-keep <- rowSums(detP < 0.15) == ncol(mSetSq)
+keep = rowSums(detP < 0.15) == ncol(mSetSq)
 table(keep)
 
-mSetSqFlt <- mSetSq[keep,]
+mSetSqFlt = mSetSq[keep,]
 mSetSqFlt
 ```
 
@@ -183,9 +241,9 @@ Depending on the nature of your samples and your biological question you may als
 
 ```{r, echo=T}
 # if your data includes males and females, remove probes on the sex chromosomes
-keep <- !(featureNames(mSetSqFlt) %in% ann850k$Name[ann850k$chr %in% c("chrX","chrY")])
+keep = !(featureNames(mSetSqFlt) %in% ann850k$Name[ann850k$chr %in% c("chrX","chrY")])
 table(keep)
-mSetSqFlt <- mSetSqFlt[keep,]
+mSetSqFlt = mSetSqFlt[keep,]
 
 ```
 
@@ -200,23 +258,47 @@ mSetSqFlt
 Once the data has been filtered and normalised, it is often useful to re-examine the MDS plots to see if the relationship between the samples has changed. It is apparent from the new MDS plots that much of the inter-individual variation has been removed as this is no longer the first principal component, likely due to the removal of the SNP-affected CpG probes. However, the samples do still cluster by individual in the second dimension and thus a factor for individual should still be included in the model.
 
 ```{r, echo=T}
-plotMDS(getM(mSetSqFlt), top=1000, gene.selection="common",
-        col=pal[factor(targets$Sample_Group)], cex=0.8)
-legend("topright", legend=levels(factor(targets$Sample_Group)), text.col=pal,
-       cex=0.65, bg="white")
+plotMDS(getM(mSetSqFlt),
+        top=1000,
+        gene.selection="common",
+        col=pal[factor(targets$Sample_Group)], 
+        cex=0.8
+)
+legend("topright", 
+       legend=levels(factor(targets$Sample_Group)),
+       text.col=pal,
+       cex=0.65,
+       bg="white"
+)
 ```
 
 
 ```{r, echo=T}
 par(mfrow=c(1,2))
-plotMDS(getM(mSetSqFlt), top=1000, gene.selection="common",
-        col=pal[factor(targets$Sample_Group)], dim=c(2,3))
-legend("topright", legend=levels(factor(targets$Sample_Group)), text.col=pal,
-       cex=0.7, bg="white")
-plotMDS(getM(mSetSqFlt), top=1000, gene.selection="common",
-        col=pal[factor(targets$Sample_Group)], dim=c(3,4))
-legend("right", legend=levels(factor(targets$Sample_Group)), text.col=pal,
-       cex=0.7, bg="white")
+plotMDS(getM(mSetSqFlt),
+        top=1000, 
+        gene.selection="common",
+        col=pal[factor(targets$Sample_Group)],
+        dim=c(2,3)
+)
+legend("topright",
+       legend=levels(factor(targets$Sample_Group)),
+       text.col=pal,
+       cex=0.7,
+       bg="white"
+)
+plotMDS(getM(mSetSqFlt),
+        top=1000, 
+        gene.selection="common",
+        col=pal[factor(targets$Sample_Group)], 
+        dim=c(3,4)
+)
+legend("right", 
+       legend=levels(factor(targets$Sample_Group)),
+       text.col=pal,
+       cex=0.7, 
+       bg="white"
+)
 ```
 
 The next step is to calculate M-values and beta values. As previously mentioned, M-values have nicer statistical properties and are thus better for use in statistical analysis of methylation data whilst beta values are easy to interpret and are thus better for displaying data. A detailed comparison of M-values and beta values was published by Du et al. (2010).
@@ -230,14 +312,26 @@ bVals <- getBeta(mSetSqFlt)
 head(bVals[,1:7])
 
 par(mfrow=c(1,2))
-densityPlot(bVals, sampGroups=targets$Sample_Group, main="Beta values",
-            legend=FALSE, xlab="Beta values")
-legend("top", legend = levels(factor(targets$Sample_Group)),
-       text.col=brewer.pal(8,"Dark2"))
-densityPlot(mVals, sampGroups=targets$Sample_Group, main="M-values",
-            legend=FALSE, xlab="M values")
-legend("topleft", legend = levels(factor(targets$Sample_Group)),
-       text.col=brewer.pal(8,"Dark2"))
+densityPlot(bVals,
+            sampGroups=targets$Sample_Group,
+            main="Beta values",
+            legend=FALSE, 
+            xlab="Beta values"
+)
+legend("top",
+       legend=levels(factor(targets$Sample_Group)),
+       text.col=brewer.pal(8,"Dark2")
+)
+densityPlot(mVals,
+            sampGroups=targets$Sample_Group,
+            main="M-values",
+            legend=FALSE,
+            xlab="M values"
+)
+legend("topleft",
+       legend=levels(factor(targets$Sample_Group)),
+       text.col=brewer.pal(8,"Dark2")
+)
 ```
 
 
@@ -253,15 +347,21 @@ tretment <- factor(targets$Sample_Group)
 # this is the individual effect that we need to account for individual <- factor(targets$Sample_Source)
 # use the above to create a design matrix
 design <- model.matrix(~0+tretment, data=targets)
-colnames(design) <- c(levels(tretment))#,levels(individual)[-1])
+colnames(design) = c(levels(tretment))#,levels(individual)[-1])
 # fit the linear model
-fit <- lmFit(mVals, design)
+fit <- lmFit(mVals, 
+             design
+)
 # create a contrast matrix for specific comparisons contMatrix <- makeContrasts(naive-rTreg,
-contMatrix <- makeContrasts(Group_T-Group_N, levels=design)
+contMatrix <- makeContrasts(Group_T-Group_N, 
+                            levels=design
+)
 contMatrix
 
 # fit the contrasts
-fit2 <- contrasts.fit(fit, contMatrix) 
+fit2 <- contrasts.fit(fit,
+                      contMatrix
+) 
 fit2 <- eBayes(fit2)
 # look at the numbers of DM CpGs at FDR < 0.05
 summary(decideTests(fit2))
@@ -272,14 +372,22 @@ We can extract the tables of differentially expressed CpGs for each comparison, 
 # get the table of results for the first contrast (naive - rTreg)
 ann850kSub <- ann850k[match(rownames(mVals),ann850k$Name),
                       c(1:4,12:19,24:ncol(ann850k))]
-DMPs <- topTable(fit2,  num=Inf, coef=1, genelist=ann850kSub)
+DMPs <- topTable(fit2, 
+                 num=Inf,
+                 coef=1, 
+                 genelist=ann850kSub
+)
 head(DMPs)
 ```
 
 The resulting data.frame can easily be written to a CSV file, which can be opened in Excel. 
 
 ```{r, echo=T}
-write.table(DMPs, file="DMPs.csv", sep=",", row.names=FALSE)
+write.table(DMPs,
+            file="DMPs.csv",
+            sep=",", 
+            row.names=FALSE
+)
 ```
 
 It is always useful to plot sample-wise methylation levels for the top differentially methylated CpG sites to quickly ensure the results make sense. If the plots do not look as expected, it is usually an indication of an error in the code, or in setting up the design matrix. It is easier to interpret methylation levels on the beta value scale, so although the analysis is performed on the M-value scale, we visualise data on the beta value scale. The ```plotCpg``` function in minfi is a convenient way to plot the sample-wise beta values stratified by the grouping variable.
@@ -287,6 +395,10 @@ It is always useful to plot sample-wise methylation levels for the top different
 ```{r, fig.width=12, fig.height=12, echo=T}
 par(mfrow=c(2,2))
 sapply(rownames(DMPs)[1:4], function(cpg){
-plotCpg(bVals, cpg=cpg, pheno=targets$Sample_Group, ylab = "Beta values")
+plotCpg(bVals, 
+        cpg=cpg,
+        pheno=targets$Sample_Group, 
+        ylab="Beta values"
+)
 })
 ```
