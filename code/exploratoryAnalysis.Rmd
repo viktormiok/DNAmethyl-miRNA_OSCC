@@ -1,0 +1,136 @@
+---
+title: "Genomic Data Science - Capstone project"
+subtitle: "Exploratory Analysis"
+author: "Marko Zecevic"
+date: "01/03/2017"
+output:
+  pdf_document:
+    fig_height: 4
+    fig_width: 9
+    highlight: tango
+  html_document:
+    highlight: tango
+    theme: journal
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+```{r, message=FALSE}
+library(DESeq2)
+library(ggplot2)
+library(reshape2)
+library(grid)
+```
+
+## Loading the data
+
+In order to use the DESeq normalization method on the raw gene counts produced with HTSeq, I leaded the data and created a ```DESeqDataSet``` object named ```dds```. For this, I also used the phenotype table created for Week 4 assignment. Most of the code is hidden to make the report fit into 3 pages.
+
+```{r, echo=FALSE}
+cnts <- list.files("./counts/")
+load("pdata.RData")
+
+sampleTable <- pdata[ , c(1, 2, 3, 5, 7, 10, 11)]
+sampleTable$fileName <- cnts[sapply(sampleTable$run_id, function(x) grep(x, cnts))]
+sampleTable <- sampleTable[ , c(1, 8, 2:7)]
+
+dds <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable, directory = "./counts", 
+                                  design = ~group + age + sex + race + RIN)
+```
+
+Up to now, I have been aligning/QCing/quantifying the expression of technical replicates separately and now it's time to merge these counts. This is done using the simple ```collapseReplicates``` function provided in the DESeq2 package. Sample specific normalization factors are calculated using ```estimateSizeFactors```. I have also created a vector ```rs``` containing, for each gene, the sum of counts across all samples. This will come in handy when plotting, to mask zero count genes.
+
+```{r}
+dds <- collapseReplicates(dds, groupby = factor(dds$experiment_id, 
+                                                levels = unique(dds$experiment_id)))
+dds <- estimateSizeFactors(dds)
+rs <- rowSums(counts(dds))
+colData(dds) #phenotype table
+```
+
+So after we collapsed technical replicates, we are left with 12 different samples  - 6 of each age group.
+
+## Exploratory analysis
+
+We can first try plotting the raw data as-is in form of boxplots, for each of 12 samples in our study.
+
+```{r, echo=FALSE}
+aux <- melt(counts(dds)[rs > 0,] + 1)
+colnames(aux)[2:3] <- c("Sample", "Gene counts")
+
+p <- ggplot(data = aux, aes(x = Sample, y = `Gene counts`)) + 
+  geom_boxplot(aes(fill = Sample), show.legend = FALSE) +
+  theme(axis.text.x=element_blank()) + 
+  ggtitle("Boxplots of raw gene counts for 12 samples")
+p
+```
+
+It's obvious that the scale is not right and the few outliers are just making it worse. For plotting purposes, I chose the log2 transformation:
+
+```{r}
+log.norm <- log2(counts(dds, normalized=TRUE) + 1)
+```
+
+...and plotted both the transformed counts and the transformed normalized counts side-by-side:
+
+
+
+
+  
+  
+```{r, echo=FALSE}
+aux1 <- melt(log2(counts(dds)[rs > 0,] + 1))
+aux2 <- melt(log.norm[rs > 0,])
+colnames(aux1)[2:3] <- colnames(aux2)[2:3] <- c("Sample", "Gene counts")
+
+p1 <- ggplot(data = aux1, aes(x = Sample, y = `Gene counts`)) + 
+  geom_boxplot(aes(fill = Sample), show.legend = FALSE) + 
+  theme(axis.text.x=element_blank()) + ggtitle("Boxplots of log2 transformed gene counts")
+p2 <- ggplot(data = aux2, aes(x = Sample, y = `Gene counts`)) + 
+  geom_boxplot(aes(fill = Sample), show.legend = FALSE) + 
+  theme(axis.text.x=element_blank()) + ggtitle("Boxplots of log2 transformed normalized counts")
+pushViewport(viewport(layout = grid.layout(1, 2)))
+print(p1, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(p2, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+```
+
+The normalized data looks really good! The next thing we can try is computing the principal components and making scatterplots using the first two. This way we can investigate how samples cluster together and look for possible hidden correlations between principal components and known variables.
+
+```{r}
+rld <- rlog(dds)
+log.norm <- log.norm[rowMeans(log.norm) > 2,]
+pc <- prcomp(t(log.norm))
+pc <- as.data.frame(pc$x)
+pc$group <- dds$group; pc$sex <- dds$sex; pc$race <- dds$race; pc$RIN <- dds$RIN
+```
+
+Most importantly, we want to see if samples from the same age group cluster together. I have colored the points by the age groups that the samples belong to. Also, the point size is proportional to RNA Integrity Number (RIN).
+
+```{r, echo=FALSE}
+s1 <- ggplot(pc, aes(PC1, PC2, colour = group, size = RIN)) + geom_point() +
+  theme(legend.position = "bottom", legend.text = element_text(size = 10)) +
+  scale_size_continuous(range = c(1, 3))
+pushViewport(viewport(layout = grid.layout(1, 1)))
+print(s1, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+```
+
+This looks really good in my opinion, besides one sample in the lower right corner of the plot. The groups can still be easily separated in 2D space, but that one is perhaps a little to far from its group. As it's the one with the lowest RIN (SRX683794 - the eight sample - the one with most outliers on the boxplot) I was tempted to remove it from the further analysis, but decided not to.
+
+Coloring the points by other variables in the phenotype table provided no additional insight.
+
+```{r, echo=FALSE}
+s2 <- ggplot(pc, aes(PC1, PC2, colour = sex, size = RIN)) + geom_point() +
+  theme(legend.position = "bottom", legend.text = element_text(size = 10)) +
+  scale_size_continuous(range = c(1, 3))
+
+s3 <- ggplot(pc, aes(PC1, PC2, colour = race, size = RIN)) + geom_point() +
+  theme(legend.position = "bottom", legend.text = element_text(size = 10)) +
+  scale_size_continuous(range = c(1, 3))
+
+pushViewport(viewport(layout = grid.layout(1, 2)))
+print(s2, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(s3, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+```
+
