@@ -5,6 +5,8 @@ Characterization of DNA methylation regulatory network profiles of archived Oral
 # Background 
 Oral squamous cell carcinoma (OSCC) is one of the most common head and neck squamous cell tumors. MicroRNAs and DNA methylation, as epigenetic mechanisms, regulate the expression of oncogenes and tumor suppressor genes, contributing to carcinogenic development. However, the current knowledge of the genetic and epigenetic landscape of OSCC is still limited.
 
+# Objectives
+To assess the transcriptomic impact of microRNAs found to be methylated through Infinium genome-wide methylation profiling of archived OSCC tissues, and to analyze their biological role using gene network analysis.
 
 # Reference
 
