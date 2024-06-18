@@ -8,6 +8,10 @@ Oral squamous cell carcinoma (OSCC) is one of the most common head and neck squa
 # Objectives
 To assess the transcriptomic impact of microRNAs found to be methylated through Infinium genome-wide methylation profiling of archived OSCC tissues, and to analyze their biological role using gene network analysis.
 
+# Material and methods 
+
+We used the Infinium array-based methylation assay to assess the genome-wide methylation status at the single-CpG-site level of DNA purified from archived OSCC tissue samples. After quality control, filtering out poorly performing probes and normalization of data, we identified the differentially methylated microRNA loci. We performed a literature-based analysis of OSCC transcriptomic data to identify the predicted target genes for each microRNA, followed by individual network and pathway enrichment analyses.
+
 # Reference
 
 - Avram, G.E., Motar, A.I., Miok, V., Baderca, F., Samoila, C., Alexa, A., Andreescu, I.N., Podariu, A., Marian, C.V., Sirbu, I. (2022), "[Gene network analysis of the transcriptome impact of methylated microRNAs on oral squamous cell carcinoma](https://web.p.ebscohost.com/abstract?direct=true&profile=ehost&scope=site&authtype=crawler&jrnl=26016974&AN=139890412&h=PVxjvTnYMk6Yjrjk6jVqUu%2bwpV7vjm3kFuUqfTkLAuT3BD%2bz2dlbZ2E0E0rGRtXaCb0V8sf0nnHFQ313WxYkvw%3d%3d&crl=f&resultNs=AdminWebAuth&resultLocal=ErrCrlNotAuth&crlhashurl=login.aspx%3fdirect%3dtrue%26profile%3dehost%26scope%3dsite%26authtype%3dcrawler%26jrnl%3d26016974%26AN%3d139890412)", *Advances in Clinical and Experimental Medicine* Vol. 29 Issue 12.
