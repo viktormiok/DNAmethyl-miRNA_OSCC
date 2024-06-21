@@ -10,7 +10,11 @@ To assess the transcriptomic impact of microRNAs found to be methylated through 
 
 # Material and methods 
 
-We used the Infinium array-based methylation assay to assess the genome-wide methylation status at the single-CpG-site level of DNA purified from archived OSCC tissue samples. After quality control, filtering out poorly performing probes and normalization of data, we identified the differentially methylated microRNA loci. We performed a literature-based analysis of OSCC transcriptomic data to identify the predicted target genes for each microRNA, followed by individual network and pathway enrichment analyses.
+We used the Infinium array-based methylation assay to assess the genome-wide methylation status at the single-CpG-site level of DNA purified from archived OSCC tissue samples. After quality control, filtering out poorly performing probes, and normalization of data, we identified the differentially methylated microRNA loci. We performed a literature-based analysis of OSCC transcriptomic data to identify the predicted target genes for each microRNA, followed by individual network and pathway enrichment analyses.
+
+# Results
+
+The analysis of Infinium methylation array data revealed 1469 differentially hypomethylated loci, 4 of which were of interest, namely hsa-microRNA-124-3, hsa-microRNA-24-1, hsa-microRNA-769, and hsa-microRNA-4500. Network and pathway enrichment analyses revealed multiple pathways modulated through DNA methylation-microRNA expression axes.
 
 # Reference
 
