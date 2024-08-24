@@ -10,7 +10,7 @@ To assess the transcriptomic impact of microRNAs found to be methylated through 
 
 # Material and methods 
 
-We used the Infinium array-based methylation assay to assess the genome-wide methylation status at the single-CpG-site level of DNA purified from archived OSCC tissue samples. We identified the differentially methylated microRNA loci after quality control, filtering out poorly performing probes and data normalization. We conducted a literature-based analysis of OSCC transcriptomic data to identify the predicted target genes for each microRNA, followed by individual network and pathway enrichment analyses.
+We used the Infinium array-based methylation assay to assess the genome-wide methylation status at the single-CpG-site level of DNA purified from archived OSCC tissue samples. After quality control, we identified the differentially methylated microRNA loci, filtering out poorly performing probes and data normalization. We conducted a literature-based analysis of OSCC transcriptomic data to identify the predicted target genes for each microRNA, followed by individual network and pathway enrichment analyses.
 
 # Results
 
