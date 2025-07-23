@@ -3,14 +3,14 @@
 Characterization of DNA methylation regulatory network profiles of archived Oral Squamous Cell Carcinoma (OSCC) tissues and their interplay with microRNA gene expression.
 
 # Background 
-Oral squamous cell carcinoma (OSCC) is one of the most common head and neck squamous cell tumors. MicroRNAs and DNA methylation, as epigenetic mechanisms, regulate the expression of oncogenes and tumor suppressor genes, contributing to carcinogenic development. However, the current knowledge of the genetic and epigenetic landscape of OSCC is still limited.
+Oral squamous cell carcinoma (OSCC) is one of the most common head and neck squamous cell tumors. MicroRNAs and DNA methylation, as epigenetic mechanisms, regulate the expression of oncogenes and tumor suppressor genes, contributing to carcinogenic development. However, current knowledge of the genetic and epigenetic landscape of OSCC remains limited.
 
 # Objectives
 To assess the transcriptomic impact of microRNAs found to be methylated through Infinium genome-wide methylation profiling of archived OSCC tissues and to analyze their biological role using gene network analysis.
 
 # Material and methods 
 
-We used the Infinium array-based methylation assay to assess the genome-wide methylation status at the single-CpG-site level of DNA purified from archived OSCC tissue samples. After quality control, we identified the differentially methylated microRNA loci, filtering out poorly performing probes and data normalization. We conducted a literature-based analysis of OSCC transcriptomic data to identify the predicted target genes for each microRNA, followed by individual network and pathway enrichment analyses.
+We used the Infinium array-based methylation assay to assess the genome-wide methylation status at the single-CpG-site level of DNA purified from archived OSCC tissue samples. After quality control, we identified the differentially methylated microRNA loci, filtering out poorly performing probes and normalizing the data. We conducted a literature-based analysis of OSCC transcriptomic data to identify the predicted target genes for each microRNA, followed by individual network and pathway enrichment analyses.
 
 # Results
 
